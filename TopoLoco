@@ -1,0 +1,209 @@
+#!/bin/bash
+
+COUNTER=1
+DADO1=0
+DADO2=0
+DADO3=0
+PLAYERS=1
+TURN=1
+DUQUES=0
+CHECK=0
+ESCALERA=0
+BRINCO=0
+ARRAY=("Numbers:")
+echo "Welcome to TopoLoco"
+echo ""
+
+while [ $COUNTER -le 2 ]; do
+	echo Player $PLAYERS is throwing dice...
+	echo ""
+	while [ $TURN -le 4 ];	do
+		echo Turn $TURN
+		let DADO1=$(( ( RANDOM % 6 ) +1 ))
+		let DADO2=$(( ( RANDOM % 6 ) +1 ))
+		let DADO3=$(( ( RANDOM % 6 ) +1 ))
+		echo Numbers of the 3 dice: $DADO1 $DADO2 $DADO3
+
+		#Checking if the dices have the same value
+		if [[ "$DADO1|$DADO2|$DADO3" = "$DADO1|$DADO1|$DADO1" ]]; then
+			echo "Player $PLAYERS have won!"
+			let CHECK=1
+		#	let TURN=4
+		#	let COUNTER=2
+			exit
+		fi
+
+		#Ordenando los dados
+		nos=($DADO1 $DADO2 $DADO3)
+		#echo ${nos[@]} | awk 'BEGIN{RS= " ";} {print $1}' | sort 
+		if [ ${nos[0]} -ge ${nos[1]} ]; then
+			temp=${nos[0]}
+			nos[0]=${nos[1]}
+			nos[1]=$temp
+		fi
+		if [ ${nos[1]} -ge ${nos[2]} ]; then
+			temp=${nos[1]}
+			nos[1]=${nos[2]}
+			nos[2]=$temp
+		fi
+		if [ ${nos[0]} -ge ${nos[1]} ]; then
+			temp=${nos[0]}
+			nos[0]=${nos[1]}
+			nos[1]=$temp
+		fi
+
+		#INSERTING MENU!!!!!!
+		OPTIONS="DUQUE BRINCO ESCALERA ADJUNTE"
+		select opt in $OPTIONS; do
+			#9th option: Escalera
+			if [ "$opt" = "ESCALERA" ]; then
+				#Check if it is empty...
+				if [ $ESCALERA -eq 0 ]; then 
+					#Adding Escalera
+					if [[ "${nos[0]}|${nos[1]}|${nos[2]}" = "1|2|3" ]]; then
+						let ESCALERA+=nos[0]+nos[1]+nos[2]
+						echo "ESCALERA: " $ESCALERA
+						break
+						#echo SUCCESS
+					elif [[ "${nos[0]}|${nos[1]}|${nos[2]}" = "2|3|4" ]]; then
+						let ESCALERA+=nos[0]+nos[1]+nos[2]
+						echo "ESCALERA: " $ESCALERA
+						break
+						#echo SUCCES"ESCALERA: " 
+					elif [[ "${nos[0]}|${nos[1]}|${nos[2]}" = "3|4|5" ]]; then
+						let ESCALERA+=nos[0]+nos[1]+nos[2]
+						echo "ESCALERA: " $ESCALERA
+						break
+						#echo SUCCESS
+					elif [[ "${nos[0]}|${nos[1]}|${nos[2]}" = "4|5|6" ]]; then
+						let ESCALERA+=nos[0]+nos[1]+nos[2]
+						echo "ESCALERA: " $ESCALERA
+						break
+						#echo SUCCESS
+					fi 
+						echo No hubo escalera. Selecione otra opcion
+				else
+						echo No está vacío.  Escoja otra opción
+				fi
+			
+			#8th Option: Brinco
+			elif [ "$opt" = "BRINCO" ]; then
+				#Check if it empty...
+				if [ $BRINCO -eq 0 ]; then
+					#Adding Brinco
+					#BRINCO
+					if [ "${nos[1]}" == $((nos[0]+2)) ] || [ "${nos[2]}" == $((nos[1]+2)) ]; then
+						let BRINCO+=nos[0]+nos[1]+nos[2] 
+						echo "BRINCO: " $BRINCO
+						break
+					fi
+					echo No hubo brinco.  Selecione otra opcion.
+				else
+					echo No está vacío.  Escoja otra opción.
+				fi
+			#7th Option: DUQUE
+			elif [ "$opt" = "DUQUE" ]; then
+				if [ $DUQUES -eq 0 ]; then
+					#Compara si dos dados son iguales en cada if
+					if [ $DADO1 = $DADO3 ]; then
+						let DUQUES+=$DADO1+$DADO3
+						echo "DUQUE: " $DUQUES
+						break
+					elif [ $DADO1 = $DADO2 ]; then
+						let DUQUES+=$DADO1+$DADO2
+						echo "DUQUE: " $DUQUES
+						break
+					elif [ $DADO2 = $DADO3 ]; then
+						let DUQUES+=$DADO2+$DADO3
+						echo "DUQUE: " $DUQUES
+						break
+					else
+						echo No hubo duque.  Selecione otra opcion	
+					fi
+				else
+					echo No está vacio.  Escoje otra opcion.  
+				fi
+			#Adjunte
+			elif [ "$opt" = "ADJUNTE" ]; then
+				echo ""
+				echo Choose one of the 3 dice: $DADO1 $DADO2 $DADO3
+				OPTIONS1="$DADO1 $DADO2 $DADO3"
+				select opt1 in $OPTIONS1; do
+
+				if [ "$opt1" = "$DADO1" ]; then
+                	#Checking if element exist
+                	if [[ "${ARRAY[*]} " == *" $DADO1 "* ]]; then
+                  		echo No se puede adjudicar
+                	else
+                  		ARRAY=("${ARRAY[@]}" "$DADO1")
+                  		echo ${ARRAY[@]}
+                  		break
+                	fi
+
+               	elif [ "$opt1" = "$DADO2" ]; then
+
+                	if [[ "${ARRAY[*]} " == *" $DADO2 "* ]]; then
+                  		echo No se puede adjudicar
+                	else
+                  		ARRAY=("${ARRAY[@]}" "$DADO2")
+                  		echo ${ARRAY[@]}
+                  		break
+                	fi
+
+               	elif [ "$opt1" = "$DADO3" ]; then
+
+                	if [[ "${ARRAY[*]} " == *" $DADO3 "* ]]; then
+                  		echo No se puede adjudicar
+                	else
+                  		ARRAY=("${ARRAY[@]}" "$DADO3")
+                  		echo ${ARRAY[@]}
+                  		break
+                	fi
+
+               	else
+                	echo Escoja una opción válida.
+
+               fi
+           done
+           echo ""
+           break
+           #END SECOND OPTION (ADJUDICAR)
+       			else
+       				echo Escoja una opción válida.
+			fi
+		done
+		#END FIRST OPTION 
+	let TURN+=1
+	echo ""
+	done
+	echo ""
+	TEMP=("${ARRAY[@]}")
+	unset TEMP[0]
+	item=0
+
+	for i in $TEMP; do
+		item=$(($TEMP))
+		echo item: $item
+	done
+
+
+	TOTAL=0
+	TOTAL=$((DUQUES + ESCALERA + BRINCO))
+	echo Player $PLAYERS total points:  $TOTAL
+	
+	let COUNTER=COUNTER+1
+	let PLAYERS+=1
+	
+	let TEMP=0
+	let item=0
+	ARRAY=("Numbers:")
+	
+	ESCALERA=0
+	BRINCO=0
+	DUQUES=0
+	TURN=1
+	
+	echo "---------------------------------"
+	echo ""
+done
+
