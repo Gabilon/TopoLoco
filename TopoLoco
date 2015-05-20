@@ -5,12 +5,14 @@ DADO1=0
 DADO2=0
 DADO3=0
 PLAYERS=1
+PLAYER1=0
 TURN=1
 DUQUES=0
 CHECK=0
 ESCALERA=0
 BRINCO=0
 ARRAY=("Numbers:")
+TOTAL1=0
 echo "Welcome to TopoLoco"
 echo ""
 
@@ -191,6 +193,11 @@ while [ $COUNTER -le 2 ]; do
 	TOTAL=$((DUQUES + ESCALERA + BRINCO))
 	echo Player $PLAYERS total points:  $TOTAL
 	
+	if [ $PLAYERS -eq 1 ]; then
+		TOTAL1=$TOTAL
+		PLAYER1=$PLAYERS
+	fi
+
 	let COUNTER=COUNTER+1
 	let PLAYERS+=1
 	
@@ -206,4 +213,13 @@ while [ $COUNTER -le 2 ]; do
 	echo "---------------------------------"
 	echo ""
 done
+
+#Winner.  If Second TOTAL is less than TOTAL1 (which is Player1), then Player1 WINZ
+if [ "$TOTAL" -lt "$TOTAL1" ]; then
+	echo "Player " $PLAYER1 "wins!"
+elif [ "$TOTAL" -eq "$TOTAL1"]
+	echo "It's a tie!"
+else
+	echo "Player " $PLAYERS "wins!"
+
 
